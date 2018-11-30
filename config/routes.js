@@ -44,15 +44,19 @@ function register(req, res) {
   
 }
 
-function login(req, res) {
+async function login(req, res) {
   // implement user login
   const creds = req.body;
-  const user = db('users').where({ username: creds.username }).first();
-  if (!user || !bcrypt.compareSync(creds.password, user.password)) {
-    res.status(401).json({ message: 'didnt work' })
-  } else {
-    const token = createToken(user);
-    res.status(200).json({ message: 'worked' })
+  try {
+    const user = await db('users').where({ username: creds.username }).first();
+    if (!user || !bcrypt.compareSync(creds.password, user.password)) {
+      res.status(401).json({ message: 'didnt work' })
+    } else {
+      const token = createToken(user);
+      res.status(200).json({ message: 'worked', token})
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'error' })
   }
 
 }
