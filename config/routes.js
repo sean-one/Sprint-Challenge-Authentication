@@ -13,7 +13,6 @@ module.exports = server => {
   server.post('/api/login', login);
   server.get('/api/jokes', authenticate, getJokes);
 };
-
 function createToken(user) {
   const payload = {
     subject: user.id,
@@ -23,7 +22,7 @@ function createToken(user) {
   const options = {
     expiresIn: '20m'
   }
-
+  
   return jwt.sign(payload, secret, options)
 }
 
@@ -34,13 +33,13 @@ function register(req, res) {
   const hash = bcrypt.hashSync(user.password, 14);
   user.password = hash
   db('users')
-    .insert(user)
-    .then(id => {
-      res.status(200).json(id)
-    })
-    .catch(err => {
-      res.status(500).json({ message: 'we made mistakes' })
-    })
+  .insert(user)
+  .then(id => {
+    res.status(200).json(id)
+  })
+  .catch(err => {
+    res.status(500).json({ message: 'we made mistakes' })
+  })
   
 }
 
@@ -58,13 +57,13 @@ async function login(req, res) {
   } catch (error) {
     res.status(500).json({ message: 'error' })
   }
-
+  
 }
 
 function getJokes(req, res) {
   axios
     .get(
-      'https://08ad1pao69.execute-api.us-east-1.amazonaws.com/dev/random_ten'
+      'https://safe-falls-22549.herokuapp.com/random_ten'
     )
     .then(response => {
       res.status(200).json(response.data);
